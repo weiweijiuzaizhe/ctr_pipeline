@@ -41,10 +41,7 @@ def read_from_data(input_file,cls):  # input_file 输入的文件路径,cls 对�
                     oldLine = newLine
                     count += 1
                     if (count % distance == 0):
-    					print  "now have read %s lines,tag:%s" %(count,tag)
-
-                        #print  "tag:%d" %(tag)
-
+    					print  "now have read %s lines" %(count)
 
     for k in cl_dist:
         if cl_dist[ k ] > threshold : #出现了threshold次以上
@@ -87,8 +84,7 @@ def get_featue_id_file(out_file,input_file,max_cls): #最好在这里将中间�
 
 input_file = sys.argv[1];
 out_file = sys.argv[2]; 
-#stat_dict = read_from_data( input_file,2 )
-#write_dict_to_file(out_file,stat_dict)
+
 
 get_featue_id_file(out_file,input_file,cls_num)
 

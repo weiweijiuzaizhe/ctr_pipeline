@@ -8,7 +8,18 @@ import os
 distance = 1000000
 cls_num = 40
 threshold = 1
+cache_size = 10*10*1024
 
+"""
+Parameters:
+  input_file - 输入特征编码文件,文件格式如下:
+	1:1_44:9260
+	2:1_45:8671
+	feature_id:cls_value:cnt
+
+Returns:
+  dict  cls_value->hash_id
+"""
 def dict_from_meta(input_file):  
     s1 = time.clock()
     file = open(input_file)
@@ -18,8 +29,7 @@ def dict_from_meta(input_file):
     to_return = dict()
     
     while 1:
-        lines = file.readlines(10*10*1024)  
-        #print len(lines)
+        lines = file.readlines( cache_size ) 
         if not lines:
             break
         for line in lines:
@@ -27,21 +37,26 @@ def dict_from_meta(input_file):
                 newLine =  line
                 if (newLine != oldLine):
                     split_res = newLine.split(":")
-                    hash_id = split_res[1]
-                    cls_v = split_res[0]
+                    hash_id = split_res[ 0 ]
+                    cls_v = split_res[ 1 ]
                     to_return[ cls_v ] = hash_id
                     oldLine = newLine
                     count += 1
-                    if (count % distance == 0):
-    					print  "now have read %s lines" %(count)
 
-    print "deal %s lines" %(count)
-    e1 = time.clock()
-    print "spent time:" + str(e1-s1)
     return to_return
 
 
 
+
+
+"""
+Parameters:
+  meta_dict - 输入的数组cls_value->hash_id
+  input_file - criteo训练文件,tag以及39列数据
+
+Returns:
+  print one_hot 编码后的数据,调用方法类似于root@91fbbd3742ac:/github/ctr_pipeline# nohup python criteo_one_hot.py feature_id.txt /github/temp_data/train.txt >  /github/temp_data/train_one_hot.txt &
+"""
 def from_criteo_to_format(meta_dict,input_file):
     s1 = time.clock()
     file = open(input_file)
@@ -51,40 +66,29 @@ def from_criteo_to_format(meta_dict,input_file):
     to_return = dict()
     
     while 1:
-        lines = file.readlines(10*10*1024)  
-        #print len(lines)
+        lines = file.readlines( cache_size ) 
         if not lines:
             break
         for line in lines:
+            str_to_print = ""
             if line.strip():  
                 newLine =  line
                 if (newLine != oldLine):
                     split_res = newLine.split("\t")
                     for i in range(0,cls_num   ):
-                        print  "%d:%s" %(i,split_res[i] )
                         if(i != 0):
-                            key = str(i) + "_" + split_res[i]
+                            key = str(i) + "_" + split_res[ i ]
                             value = meta_dict.get(key , -1)
-                            print key
+                            if(value > 0):
+                            	str_to_print = str_to_print + value +":1 " 
+                        if(i == 0):
+                        	tag = split_res[ 0 ]
+                        	str_to_print = str_to_print + tag + " "
+                count += 1
+                print str_to_print
 
-
-
-
-                 
-                    oldLine = newLine
-                    count += 1
-                    if (count % distance == 0):
-                        print  "now have read %s lines" %(count)
-
-    print "deal %s lines" %(count)
-    e1 = time.clock()
-    print "spent time:" + str(e1-s1)
+                oldLine = newLine
     return to_return
-
-
-    
-
-
 
 
 
