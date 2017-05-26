@@ -1,0 +1,47 @@
+##############################t_hub_store##############################
+
+# Dockerfile to build MongoDB container images
+
+# Based on Ubuntu
+
+############################################################
+
+
+# Set the base image to Ubuntu
+
+FROM ubuntu
+
+# File Author
+
+MAINTAINER wuwei
+
+################## BEGIN INSTALLATION ######################
+RUN apt-get update
+
+RUN apt-get install -y git
+
+RUN apt-get install -y openssh-server
+
+RUN apt-get install -y gcc gcc-c++ kernel-devel
+
+RUN apt-get install -y automake autoconf libtool make
+
+
+#RUN mkdir -p /github/wormhole
+#COPY ./git_hub_store/xgboost /github/wormhole/xgboost
+
+#cd /github/wormhole && \
+#git clone --recursive  https://github.com/weiweijiuzaizhe/xgboost.git && \
+#cd /github/wormhole/xgboost/dmlc-core && \
+#make -j8 && \
+#cd /github/wormhole/xgboost/rabit && \
+#make -j8 && \
+#RUN cd /github/wormhole/xgboost/ && \
+#sh build.sh
+
+
+
+
+#RUN /usr/sbin/sshd -D
+
+##################### INSTALLATION END #####################
