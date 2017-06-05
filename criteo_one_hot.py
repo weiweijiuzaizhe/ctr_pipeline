@@ -20,9 +20,9 @@ Parameters:
 Returns:
   dict  cls_value->hash_id
 """
-def dict_from_meta(input_file):  
+def dict_from_meta(dict_file):  
     s1 = time.clock()
-    file = open(input_file)
+    file = open(dict_file)
     oldLine = '0'
     count = 0
     
@@ -74,17 +74,27 @@ def from_criteo_to_format(meta_dict,input_file):
             if line.strip():  
                 newLine =  line
                 if (newLine != oldLine):
-                    split_res = newLine.split("\t")
+                    split_res = newLine.split("\t") #将输入的一行分解为数组
+                    key_dict = {}
                     for i in range(0,cls_num   ):
                         if(i != 0):
                             key = str(i) + "_" + split_res[ i ]
                             value = meta_dict.get(key , -1)
-                            if(value > 0):
-                            	str_to_print = str_to_print + value +":1 " 
+                            if(value > 0): #找到了这个对应的下标
+                            	#str_to_print = str_to_print + value +":1 "
+                            	key_dict[ int(value) ] = 1
+
+
                         if(i == 0):
                         	tag = split_res[ 0 ]
                         	str_to_print = str_to_print + tag + " "
+
+
                 count += 1
+                sorted_dict = sorted(key_dict.items(), key=lambda d:d[0]) #根据key排序 
+                for v in sorted_dict:
+                	str_to_print = str_to_print + str(v[0]) +":1 "
+                str_to_print = str_to_print.strip()
                 print str_to_print
 
                 oldLine = newLine
@@ -92,10 +102,10 @@ def from_criteo_to_format(meta_dict,input_file):
 
 
 
-input_file = sys.argv[1];
-out_file = sys.argv[2]; 
+dict_file = sys.argv[1];
+input_file = sys.argv[2]; 
 
 
-feature_id_dict = dict_from_meta(input_file)
-from_criteo_to_format(feature_id_dict,out_file)
+feature_id_dict = dict_from_meta(dict_file) 
+from_criteo_to_format(feature_id_dict,input_file)
 

@@ -7,7 +7,7 @@ import os
 
 
 
-distance = 1000000
+distance = 100000
 cls_num = 40
 threshold = 1
 
